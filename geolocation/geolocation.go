@@ -81,34 +81,57 @@ type Info struct {
 
 // New takes an optional location (IP address or domain name) and returns
 // geolocation information about the location.
-func New(location ...string) (*Info, error) {
+func (i *Info) New(location ...string) error {
 	request, err := setupRequest(location...)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	response, err := httpClient.Do(request)
 	if err != nil {
-		return nil, err
+		return err
+	}
+
+	if response.StatusCode == http.StatusTooManyRequests {
+		return errors.New("Too many requests. Please wait 1 minute")
+	} else if response.StatusCode != http.StatusOK {
+		return fmt.Errorf("HTTP Error: %s", response.Status)
 	}
 
 	defer response.Body.Close()
 	content, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	var info Info
-	err = json.Unmarshal(content, &info)
+	err = json.Unmarshal(content, i)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	if info.Status != "success" {
-		return nil, errors.New(info.Message)
+	if i.Status != "success" {
+		return errors.New(i.Message)
 	}
 
-	return &info, nil
+	return nil
+}
+
+// ValidateFields validates that the given field names exist within the given Info object.
+func (i *Info) ValidateFields(fields ...string) error {
+	t := reflect.Indirect(reflect.ValueOf(i)).Type()
+
+	for _, field := range fields {
+		// If we encounter this special variable, we can skip further checks.
+		if field == "All" {
+			return nil
+		}
+
+		if sf, ok := t.FieldByName(field); !ok || sf.Tag.Get("meridian") == "disable" {
+			return fmt.Errorf("Invalid field name %s", field)
+		}
+	}
+
+	return nil
 }
 
 // ToString returns a formatted string representation of the Info struct.

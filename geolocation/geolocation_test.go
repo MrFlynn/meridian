@@ -32,6 +32,26 @@ var response = Info{
 	IP:             "0.0.0.0",
 }
 
+func TestValidate(t *testing.T) {
+	if err := response.ValidateFields("Continent"); err != nil {
+		t.Errorf("Got unexpected error: %s", err)
+	}
+
+	if err := response.ValidateFields("Country", "All"); err != nil {
+		t.Errorf("Got unexpected error: %s", err)
+	}
+
+	expected := "Invalid field name Status"
+	if err := response.ValidateFields("Status"); err.Error() != expected {
+		t.Errorf("Expected error %s, Got %s", expected, err)
+	}
+
+	expected = "Invalid field name DoesNotExist"
+	if err := response.ValidateFields("DoesNotExist"); err.Error() != expected {
+		t.Errorf("Expected error %s, Got %s", expected, err)
+	}
+}
+
 func TestSetupRequest(t *testing.T) {
 	request, err := setupRequest()
 	if err != nil {
