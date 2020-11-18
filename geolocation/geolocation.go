@@ -67,15 +67,15 @@ type Info struct {
 	City           string  `json:"city,omitempty"`
 	District       string  `json:"district,omitempty"`
 	ZIP            string  `json:"zip,omitempty"`
-	Latitude       float64 `json:"lat,omitempty"`
-	Longitude      float64 `json:"lon,omitempty"`
+	Latitude       float64 `json:"lat"`
+	Longitude      float64 `json:"lon"`
 	Timezone       string  `json:"timezone,omitempty"`
-	TimezoneOffset int     `json:"offset,omitempty"`
+	TimezoneOffset int     `json:"offset"`
 	ISP            string  `json:"isp,omitempty"`
 	ORG            string  `json:"org,omitempty"`
 	ASN            string  `json:"as,omitempty"`
-	Mobile         bool    `json:"mobile,omitempty"`
-	Proxy          bool    `json:"proxy,omitempty"`
+	Mobile         bool    `json:"mobile"`
+	Proxy          bool    `json:"proxy"`
 	IP             string  `json:"query,omitempty"`
 }
 
@@ -165,7 +165,7 @@ func (i *Info) String() string {
 // the byte array with only those fields (unless the All specifier is given), regardless of
 // whether or not the fields are set in the Info struct.
 func (i *Info) ToJSON(fields ...string) ([]byte, error) {
-	aux := Info{}
+	aux := &Info{}
 	auxRef := reflect.ValueOf(aux)
 
 	it := i.toIter(fields...)
@@ -175,12 +175,12 @@ func (i *Info) ToJSON(fields ...string) ([]byte, error) {
 			continue
 		}
 
-		if targetField := auxRef.FieldByName(field.Name); targetField.CanSet() {
+		if targetField := auxRef.Elem().FieldByName(field.Name); targetField.CanSet() {
 			targetField.Set(value)
 		}
 	}
 
-	return json.Marshal(aux)
+	return json.Marshal(&aux)
 }
 
 type infoIter struct {

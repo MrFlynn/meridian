@@ -180,14 +180,14 @@ IP: 0.0.0.0
 }
 
 func TestToJSON(t *testing.T) {
-	var responseJSON = []byte(`{"country": "United States", "zip": "94103", "mobile": false}`)
+	var responseJSON = []byte(`{"country":"United States","zip":"94103","lat":0,"lon":0,"offset":0,"mobile":false,"proxy":false}`)
 
-	v, err := response.ToJSON("Country", "ZIp", "Mobile")
+	v, err := response.ToJSON("Country", "ZIP", "Mobile")
 	if err != nil {
 		t.Errorf("Got unexepected error: %s", err)
 	}
 
-	if cmp.Equal(responseJSON, v) {
-		t.Error(cmp.Diff(responseJSON, v))
+	if !cmp.Equal(responseJSON, v) {
+		t.Error(cmp.Diff(string(responseJSON), string(v)))
 	}
 }
