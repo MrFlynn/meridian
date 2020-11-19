@@ -56,7 +56,6 @@ func printDefault(cmd *cobra.Command, args []string) {
 // Execute runs the main root command.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
