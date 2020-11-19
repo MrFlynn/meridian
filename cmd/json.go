@@ -16,6 +16,14 @@ var (
 )
 
 func init() {
+	jsonCmd.Flags().StringSliceVarP(
+		&fields,
+		"fields",
+		"f",
+		[]string{"Latitude", "Longitude", "City", "RegionName", "Country", "IP"},
+		"Default fields to output for location query (required)",
+	)
+
 	rootCmd.AddCommand(jsonCmd)
 }
 

@@ -24,7 +24,7 @@ latitude, longitude, timezone, country, etc.`,
 )
 
 func init() {
-	rootCmd.PersistentFlags().StringSliceVarP(
+	rootCmd.Flags().StringSliceVarP(
 		&fields,
 		"fields",
 		"f",
