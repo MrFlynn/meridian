@@ -15,6 +15,7 @@ var (
 		Long: `Meridian is a CLI application for displaying information about your location like
 latitude, longitude, timezone, country, etc.`,
 		PersistentPreRunE: setup,
+		Args:              cobra.NoArgs,
 		Run:               printDefault,
 	}
 
@@ -29,7 +30,7 @@ func init() {
 		"fields",
 		"f",
 		[]string{"Latitude", "Longitude", "City", "RegionName", "Country", "IP"},
-		"Default fields to output for location query (required)",
+		"Location data to display. See info subcommand for options (required)\n",
 	)
 	rootCmd.PersistentFlags().StringVarP(
 		&location, "ip", "p", "", "IP address to use in query. Defaults to current location",

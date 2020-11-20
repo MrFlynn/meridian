@@ -11,6 +11,7 @@ var (
 		Use:   "json",
 		Short: "Outputs location information as JSON",
 		Long:  "Outputs location query results as JSON for use with tools like jq",
+		Args:  cobra.NoArgs,
 		RunE:  printJSON,
 	}
 )
@@ -21,7 +22,7 @@ func init() {
 		"fields",
 		"f",
 		[]string{"Latitude", "Longitude", "City", "RegionName", "Country", "IP"},
-		"Default fields to output for location query (required)",
+		"Location data to display. See info subcommand for options (required)\n",
 	)
 
 	rootCmd.AddCommand(jsonCmd)
