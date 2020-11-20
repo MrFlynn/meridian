@@ -34,8 +34,6 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(
 		&location, "ip", "p", "", "IP address to use in query. Defaults to current location",
 	)
-
-	rootCmd.MarkFlagRequired("fields")
 }
 
 func setup(cmd *cobra.Command, args []string) error {
