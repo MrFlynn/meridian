@@ -1,0 +1,50 @@
+project_name: meridian
+before:
+  hooks:
+    - go mod download
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    goarm:
+      - 7
+      - 8
+    ldflags:
+      - -s -w -X main.version={{ .Version }} -X main.commit={{ .ShortCommit }} -X main.date={{ .CommitDate }}
+    ignore:
+      - goos: darwin
+        goarch: arm64
+        goarm: 7
+      - goos: darwin
+        goarch: arm64
+        goarm: 8
+brews:
+  - tap:
+      owner: mrflynn
+      name: homebrew-cider
+    commit_author:
+      name: goreleaser
+      email: actions@users.noreply.github.com
+    caveats: "Run meridian info for a list of available data."
+    homepage: "https://github.com/mrflynn/meridian"
+    description: "A tool for getting information about your current location."
+archives:
+  - builds:
+      - "{{ .ProjectName }}"
+    allow_different_binary_count: true
+checksum:
+  name_template: "SHA256SUMS"
+snapshot:
+  name_template: "{{ .Tag }}-RC-{{ .ShortCommit }}"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:*'
+      - '^test:*'
+      - '^config:*'
