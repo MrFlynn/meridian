@@ -3,7 +3,8 @@ before:
   hooks:
     - go mod download
 builds:
-  - env:
+  - id: "default"
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -35,7 +36,7 @@ brews:
     description: "A tool for getting information about your current location."
 archives:
   - builds:
-      - "{{ .ProjectName }}"
+      - default
     allow_different_binary_count: true
 checksum:
   name_template: "SHA256SUMS"
