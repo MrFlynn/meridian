@@ -11,7 +11,7 @@ import (
 var (
 	rootCmd = &cobra.Command{
 		Use:   "meridian",
-		Short: "An application for displaying information about yourlocation",
+		Short: "A tool for getting information about your current location",
 		Long: `Meridian is a CLI application for displaying information about your location like
 latitude, longitude, timezone, country, etc.`,
 		PersistentPreRunE: setup,
