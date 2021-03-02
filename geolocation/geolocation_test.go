@@ -3,6 +3,7 @@ package geolocation
 import (
 	"net/http"
 	"reflect"
+	"regexp"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -66,8 +67,8 @@ func TestSetupRequest(t *testing.T) {
 		t.Errorf("Expected URL to be http://ip-api.com/json/?fields=37482495, Got: %s", request.URL)
 	}
 
-	if request.Header.Get("User-Agent") != "meridian/0.1.0" {
-		t.Errorf("Expected User Agent to be meridian/0.1.0, Got %s", request.Header.Get("User-Agent"))
+	if regexp.MustCompile(`^meridian/\d+\d+\d+$`).MatchString(request.Header.Get("User-Agent")) {
+		t.Errorf("Expected User Agent to be in format meridian/0.0.0, Got %s", request.Header.Get("User-Agent"))
 	}
 
 	request, err = setupRequest("google.com")
