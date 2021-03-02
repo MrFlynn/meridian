@@ -14,9 +14,6 @@ builds:
   - arm64
   ldflags:
   - -s -w -X main.version={{ .Version }} -X main.commit={{ .ShortCommit }} -X main.date={{ .CommitDate }}
-  ignore:
-  - goos: darwin
-    goarch: arm64
 brews:
 - tap:
     owner: mrflynn
@@ -31,7 +28,6 @@ archives:
 - id: "default"
   builds:
   - default
-  allow_different_binary_count: true
 checksum:
   name_template: "SHASUMS.txt"
 snapshot:
