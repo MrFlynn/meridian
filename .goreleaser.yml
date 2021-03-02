@@ -36,6 +36,6 @@ changelog:
   sort: asc
   filters:
     exclude:
-    - '^docs:'
-    - '^test:'
-    - '^config:'
+    - "^docs:"
+    - "^test:"
+    - "^conf(ig)?:"
