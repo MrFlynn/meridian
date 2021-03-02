@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/spf13/viper"
 )
 
@@ -60,25 +61,25 @@ func canUseField(field reflect.StructField, useFields map[string]bool, skipCheck
 type Info struct {
 	Status         string  `json:"status,omitempty" meridian:"disable"`
 	Message        string  `json:"message,omitempty" meridian:"disable"`
-	Continent      string  `json:"continent,omitempty"`
-	ContinentCode  string  `json:"continentCode,omitempty"`
-	Country        string  `json:"country,omitempty"`
-	CountryCode    string  `json:"countryCode,omitempty"`
-	Region         string  `json:"region,omitempty"`
-	RegionName     string  `json:"regionName,omitempty"`
-	City           string  `json:"city,omitempty"`
-	District       string  `json:"district,omitempty"`
-	ZIP            string  `json:"zip,omitempty"`
+	Continent      string  `json:"continent,omitempty" description:"Full name of continent" ex:"North America"`
+	ContinentCode  string  `json:"continentCode,omitempty" description:"Shorthand name of continent" ex:"NA"`
+	Country        string  `json:"country,omitempty" description:"Full name of country" ex:"United States"`
+	CountryCode    string  `json:"countryCode,omitempty" description:"Shorthand name of country" ex:"US"`
+	Region         string  `json:"region,omitempty" description:"Shorthand name of region, state, etc." ex:"CA"`
+	RegionName     string  `json:"regionName,omitempty" description:"Full name of region, state, etc." ex:"California"`
+	City           string  `json:"city,omitempty" description:"Full name of city" ex:"San Francisco"`
+	District       string  `json:"district,omitempty" description:"Full name of city district" ex:"South of Market"`
+	ZIP            string  `json:"zip,omitempty" description:"Postal code" ex:"94103"`
 	Latitude       float64 `json:"lat"`
 	Longitude      float64 `json:"lon"`
-	Timezone       string  `json:"timezone,omitempty"`
-	TimezoneOffset int     `json:"offset"`
-	ISP            string  `json:"isp,omitempty"`
-	ORG            string  `json:"org,omitempty"`
-	ASN            string  `json:"as,omitempty"`
-	Mobile         bool    `json:"mobile"`
-	Proxy          bool    `json:"proxy"`
-	IP             string  `json:"query,omitempty"`
+	Timezone       string  `json:"timezone,omitempty" description:"tzdata name of timezone" ex:"America/Los_Angeles"`
+	TimezoneOffset int     `json:"offset" description:"Offset in seconds from UTC" ex:"-28800 for America/Los_Angeles"`
+	ISP            string  `json:"isp,omitempty" description:"Name of ISP" ex:"Comcast Cable Communications, LLC"`
+	ORG            string  `json:"org,omitempty" description:"Organizational owner of IP, usually ISP" ex:"Comcast Cable Communications, Inc"`
+	ASN            string  `json:"as,omitempty" description:"AS name and number for current IP" ex:"AS7922 Comcast Cable Communications, LLC"`
+	Mobile         bool    `json:"mobile" description:"Whether or not you are on a mobile network"`
+	Proxy          bool    `json:"proxy" description:"Whether or not you are using a proxy"`
+	IP             string  `json:"query,omitempty" description:"Current IP address" ex:"0.0.0.0"`
 }
 
 // New takes an optional location (IP address or domain name) and returns
@@ -183,6 +184,41 @@ func (i *Info) ToJSON(fields ...string) ([]byte, error) {
 	}
 
 	return json.Marshal(&aux)
+}
+
+// ToDescription returns a formatted description of all fields in the Info struct.
+func (i *Info) ToDescription() string {
+	var (
+		builder = &strings.Builder{}
+
+		bold    = color.New(color.Bold)
+		italics = color.New(color.Italic)
+	)
+
+	it := i.toIter("All")
+	for it.next() {
+		_, field, err := it.value()
+		if err != nil {
+			continue
+		}
+
+		builder.WriteString("- ")
+		bold.Fprint(builder, field.Name)
+
+		if description, ok := field.Tag.Lookup("description"); ok {
+			builder.WriteString(": ")
+			builder.WriteString(description)
+		}
+
+		if example, ok := field.Tag.Lookup("ex"); ok {
+			builder.WriteString(", ")
+			italics.Fprint(builder, "ex. ", example)
+		}
+
+		builder.WriteString(".\n")
+	}
+
+	return builder.String()
 }
 
 type infoIter struct {
