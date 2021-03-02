@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 const endpointTemplate = "http://ip-api.com/json/%s?fields=37482495"
@@ -29,7 +31,7 @@ func setupRequest(location ...string) (*http.Request, error) {
 		return nil, err
 	}
 
-	request.Header.Set("User-Agent", "meridian/0.1.0")
+	request.Header.Set("User-Agent", fmt.Sprintf("meridian/%s", viper.GetString("version")))
 
 	return request, nil
 }
