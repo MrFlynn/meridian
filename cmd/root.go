@@ -52,7 +52,7 @@ func setup(cmd *cobra.Command, args []string) error {
 }
 
 func printDefault(cmd *cobra.Command, args []string) {
-	fmt.Println(recievedInfo.ToString(fields...))
+	fmt.Print(recievedInfo.ToString(fields...))
 }
 
 // Execute runs the main root command.
