@@ -21,7 +21,7 @@ latitude, longitude, timezone, country, etc.`,
 
 	fields       []string
 	location     string
-	recievedInfo *geolocation.Info
+	recievedInfo = &geolocation.Info{}
 )
 
 func init() {
@@ -38,7 +38,10 @@ func init() {
 }
 
 func setup(cmd *cobra.Command, args []string) error {
-	recievedInfo = &geolocation.Info{}
+	// If we're just displaying program info, don't make any network requests.
+	if cmd.Use == infoCmd.Use {
+		return nil
+	}
 
 	err := recievedInfo.ValidateFields(fields...)
 	if err != nil {
